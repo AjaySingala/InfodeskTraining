@@ -1,0 +1,480 @@
+ADO.NET
+	ADO - Microsoft ActiveX Data Objects
+	ODBC, OLEDB (COM, COM+)
+	
+Disconnected Architecture (DA).
+	Web Services ===> SOAP -> Simple Object Access Protocol.
+		Fetch the data.
+		No need for a live connection to the DB all the time.
+		Process or work on it locally, without having a live connection to the DB.
+		When required, just send it back to the DB.
+		Caching, Web Services (XML), Perform lot of processing on the data.
+	Demerits:
+		If the no. of rows fetched was too large, then DA would have perfomance issues.
+		
+	
+Connected Architecture (CA).
+	Connect to the DB.
+	Fetch the data.
+	Store it in objects.
+	Close connection.
+	
+Connection String
+Connection Object
+Command Object
+Reader
+
+
+.NET Core => New
+Pre-.net core => .NET Framework
+
+"Server=.\SQLEXPRESS;Initial Catalog=EnumDb;user id=abc;password=abc;"
+
+.NET Core:
+add Nuget package:
+	install-package System.Data.SqlClient
+	OR 
+	thru the Nuget Package UI.
+	
+cmd.ExecuteReader() ===> Reader object.
+cmd.ExecuteNonQuery()   ===> Does not return any rows/data. Just returns the no. of rows affected.
+cmd.ExecuteScalar() ===> Returns a single value.
+
+SELECT *
+FROM Products
+WHERE ProductCategory = 204
+GROUP BY ProductCategory
+
+10
+20
+14
+13
+
+
+INSERT INTO Employees (Lastname, Firstname)
+VALUES ('Smith', 'John');
+SELECT @@IDENTITY;
+
+
+SQL Injection:
+SELECT CustomerId, CompanyName, ContactName, City
+FROM Customers
+WHERE City = 'London';DELETE FROM Users --
+
+SQL Injection works:
+string qry = " SELECT CustomerId, CompanyName, ContactName, City";
+qry += $" FROM Customers";
+qry += $" WHERE City = '{city}'";
+
+SQL Injection does not work:
+string qry=" SELECT CustomerId, CompanyName, ContactName, City";
+qry+=$" FROM Customers";
+qry+=$" WHERE City = @City";
+
+string.Format("SELECT * FROM Customers WHERE City = {0} AND State = {1}", state, city);
+
+Disconnected Architecture (DA) of ADO.NET:
+Connection object
+DataAdapter (DA)
+DataSet (DS)
+
+Performance impact if the dataset size was too big.
+
+Easily convert the DS into XML.
+But, the size of the XML would be very large.
+
+<Customers>
+	<Customer>
+		<Id>101</Id>
+		<name>john smith</name>
+		<city>mumbai</city>
+		:
+		:
+	</Customer>
+	<Customer>
+		<Id>102</Id>
+		<name>mary jane</name>
+		<city>indore</city>
+		:
+		:
+	</Customer>
+
+</Customers>
+
+
+In-memory, load 2 tables in DS, set relationships in-memory.
+
+SELECT 
+	c.CustomerID, c.CustomerName, 
+	o.OrderId, o.OrderDate, od.PRoductId, p.PRoductName, od. Qty, od.Price
+FROM Customers 
+INNER JOIN Orders o ON o.customerid = c.customerid
+INNER JOIN ORderDetails od ON od.OrderId = o.ORderId
+INNER JOIN PRoducts p = p.productid = od.productid
+
+LINQ: Language INtegrated Query.
+- It gives SQL query type syntax.
+- Method syntax.
+	- ToList()
+	- First()
+	- FirstOrDefault()
+	- Single()
+	- SingleOrDefault()
+
+- query syntax.
+
+Anonymous Type.
+
+Eager Loading using .Include()
+Explicit Loading
+Lazy Loading
+
+There are 6-7-8 tables (objects/collections).
+	- We do not need data from all the tables.
+	- To load data on an as-needed basis, we use explicit loading.
+	
+Create an Order:
+	Order
+	CustomerId
+	EmployeeId
+	Order Details (collection)
+		Product
+		
+Banking App => Transfer from AccA to AccB
+	Withdraw in AccA
+	Deposit in AccB
+	
+	Deposit in AccB worked.
+	Withdraw in AccA failed (insufficient balance).
+	
+Transaction Management
+	
+In EF, Cascade Delete is enabled by default.
+
+Database First approach.
+
+Code First Approach:
+	- You start with no DB at all.
+	- Start with creating your model (all your entity classes).
+	- Run your app, it will create the schema (db, tables, relations).
+	- Gradually, you will create more models (entities).
+	- Enable Migrations
+	- You add 2 more tables.
+	- You create a new migration.
+	- Update the database for this migration.
+	- It will create the new tables
+		- OR ALTER tables or whatever new changes you made.
+	- Have to very careful especially with PROD dbs.
+	
+.NET Core:
+	- .NET Core vs .NET Framework:
+		- .NET Core supports multiple platforms.
+		- Create a project on Windows, it will run on Linux.
+		- Or vice-versa.
+		
+EF vs EF Core:
+
+.NET Core:
+	- By default, only bare minimum packages are part of the project.
+	- You have to add any and all required packages/libraries explicitly.
+	- JSON config files are way to go forward.
+	- Usually, config files are named "appSettings.json".
+	- To read the json config file, we have to use the configuration manager by explicitly adding the package for that.
+		- install-package Microsoft.Extensions.Configuration
+	- Because we are reading JSON, we have to include the JSON related package as well.
+		- install-package Microsoft.Extensions.Configuration.Json
+	- For EF Core, include it's package:
+		- install-package Microsoft.EntityFrameworkCore
+	- For SQL Server, add it's package:
+		- install-package Microsoft.EntityFrameworkCore.SqlServer
+	- To read the config files and map to custom classes, add the Hosting package:
+		- install-package Microsoft.Extensions.Hosting
+	- Change the "Copy to output directory" property of the config file (appSettings.json) to "Copy always".
+		- This will ensure that the config file is copied to the output folder everytime you do a build.
+		- This is because the executable looks for the config file in the same folder where the executable resides.
+	- In EF (pre-.net core era):
+		- Define a DbContext classes
+		- Define a connection string with the same name as the DbContext class in app.config.
+		- It will automatically do the mapping and connect to the DB.
+	- In EF Core, it is not that straightforward
+		- You have to explicitly read the connection string from the config file.
+		- And then give it to the DbContext class.
+		- In the ctor of the DbContext class,
+			- Read the connection string via the Config object
+		- Override the OnConfiguring method of the DbContext class
+			- specify .UseSqlServer(connectionString):
+			protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+			{
+				optionsBuilder.UseSqlServer(_connectionString);
+			}			
+		- Then, use DbContext instance and it's entity collection as usual.
+		
+Database First: where db already exists.
+Code First Approach:
+	- Where we create the model (entities) first and then based on the model, the DB will be created.
+	- To do this, we have to enable "migrations".
+	
+install-package Microsoft.EntityFrameworkCore
+install-package Microsoft.EntityFrameworkCore.SqlServer
+install-package Microsoft.EntityFrameworkCore.Tools
+
+Add-Migration CreateDb
+Update-Database
+
+Change model.
+Add-Migration "Changes Done"
+Update-Database
+
+
+DB Migrations in EF Core:
+	- Building your model first and then asking the framework to create/update the DB based on the changes done to the model.
+	
+Seed data:
+	- Carefully create the data.
+	- You have to specify the PK values even if they are auto-generated by the DB.
+	- If there are lot of tables and you need lot of data for actual testing, then Seeding can be tedious.
+		- Your code can become bloated.
+	- If data is to be externally generated or transformed, then seed is not a good idea.
+		- Password hashing.
+		- API calling.
+		- Users are to be created externally
+			- Identity
+			
+Alternative to Seeding is write custom initialization logic.
+
+EF 6 (Pre-Core):
+	install-package EntityFramework
+	
+	Enable-Migrations
+	
+	Add-Migration <name>
+	Update-Database
+	
+	Seed data:
+		- When you enable migration, it creates a Configuration.cs in the Migrations folder.
+		- In this class, override the "Seed" method and write your seed code there.
+
+
+Web APIs:
+	- a.k.a Web Services (WS).
+	- Web applications without a UI.
+	- Over HTTP.
+		- www.server.com/apiname/operation
+	- CRUD operations can be performed.
+		- APIs have web methods
+		- These methods are HTTP verbs representing the CRUD operations.
+			- GET		Read
+			- POST		Create
+			- PUT		Update
+			- DELETE	Delete
+			
+Initially, web services were based on SOAP - Simple Object Access Protocol.
+	- XML
+	- as POST
+	- Implementation was framework-specific.
+		- If a WS is created using .NET, it could be consumed only by a .NET client.
+		- XML created would have a lot of additional metadata that could be parsed easily by the framework / library that created the WS.
+	- XML data being passed between client-server would become too heavy.
+		- impact on performance.
+		
+<Customers>
+	<Customer Id="101">
+		<Firstname>John</Firstname>
+		<Lastname>Smith</Lastname>
+		:
+	</Customer>
+	<Customer Id="102">
+		<Firstname>Mary</Firstname>
+		<Lastname>Jane</Lastname>
+		:
+	</Customer>
+</Customers>
+
+	- over a period of time, JSON (JavaScript Object Notation) became popular.
+	- Why?
+		- pure text-based.
+		- light-wieght than XML.
+		- only had key-value pairs.
+		- size was very very small compared to XML.
+		
+{
+	"Customers": [
+		{ "id": 101, "firstname": "John", "lastname": "Smith" },
+		{ "id": 102, "firstname": "Mary", "lastname": "Jane" },
+	]
+}
+	
+	- SOAP also started supporting JSON. Option for XML was still there.
+	- SOAP also started supporting GET. POST was still default.
+	- SOAP urls and invocation was not "user-friendly".
+	
+	www.myservice.com/customerservice.asmx?id=101&fname=john&lname=smith
+	- Pass data either in the Query String or in the Body.
+	
+API = Application Programming Interface.
+
+RESTful APIs (Web API):
+	- REST: REpresentational State Transfer
+	- somewhere around 2000
+	- REST API Concepts:
+		- server: that offers the API as a means to access the system's data / features.
+		- client: that runs on a user's computer/device and initiates the communication.
+		- resource: a piece of content that the server can provide to the client
+			- a video.
+			- a text.
+			- customer data.
+			- order data.
+	- Supports all HTTP verbs / methods:
+		- GET
+		- PUT
+		- POST
+		- DELETE
+	- An endpoint: a URI (Uniform Resource Identifier) indicates where and how to find a resource.
+		- www.someserver.com/customer/1
+	- Headers:
+		- Since APIs work over HTTP, HTTP works on a request-response basis.
+		- Every request/response has a Header.
+		- store information about the request/response that is relevant to both, the client and the server.
+			- an API key.
+			- the format of the data being sent/received.
+			- Authorization.
+	- Body:
+		- used to convey / send / receive additional data about the resource.
+		- Usually used for PUT and POST requests.
+		
+	www.myservice.com/customerservice.asmx?id=101&fname=john&lname=smith&mname=abc&city=indore....
+	www.someserver.com/customer?id=101&fname=john&lname=smith&mname=abc&city=indore....
+	Instead, you pass the data in the body of the request-response
+	
+	So, the url will still be:
+		www.someserver.com/customerrecord
+		But the data is passed in the body usually as a JSON:
+		{
+			"id": 101, 
+			"firstname": "John", 
+			"lastname": "Smith",
+			:
+		}
+
+	All requests when they return a response also return the status of the operation performed.
+	- HTTP Status Codes
+		- 2xx status codes
+		- 3xx status codes
+		- 4xx status codes
+		- 5xx status codes
+		Examples:
+			- 200 OK.
+		https://www.restapitutorial.com/httpstatuscodes.html
+
+WSDL: Web Service Description Language: Discovery of Web Services.
+- Postman
+- Fiddler
+- Swagger
+	- It also gives the description of your API:
+		- what is the url
+		- what params required
+		- HTTP Verb
+		- Header requirements
+		- what body is required
+		- what is returned (header/body).
+
+WSDL in XML format.
+	- extract this WSDL (in xml) and share it with your client (consumers)
+	- Global Discovery / Private discovery.
+	
+RESTful APIs:
+	- Caching
+	- Stateless interactions (default)
+		- an API does not remember or store any information about the previous sessions.
+		- Treats each request independently.
+		- All data on the current request / state is included in the request body.
+
+		- Stateful service:
+			- when the server (api) remembers / stores information about previous session(s).
+			- E.g.;
+				- a client authenticates
+				- then makes a request (to get some data)
+				- expected behavior is that the API remembers that the client is already authenticated in a previous request and hence proceeds with the "get" request and returns the relevant data.
+		- Authentication (first time), userid/pwd is never sent in the Query String.
+			- It is a GET operation.
+			- But auth is always done as a POST.
+			- Always pass creds in the body of the request.
+			- The API will return a TOKEN once authenticated.
+			- This token is to be sent with every future request to the API.
+				- The API validates the token and then processes the request.
+				- if valid, returns the data / performs the ops.
+				- if invalid, 401.
+			- This "token" has an expiry.
+				- Usually the apps have an expriy 60-90 days for the token.
+				- Client has to re-authenticate after token expires.
+				- Every time you use the token (the expiry is extended for the expiry period).
+				
+		- All APIs today use token-based authentication via Identity Providers (IPs).
+			- Active Directory.
+			- Azure AD.
+			- AWS IAM.
+			- Google Users
+			- Okta
+		- SAML
+		- OAuth2
+		
+			
+.NET Core / ASP.NET Core:
+	- Almost everything is based on Dependency-Injection (DI).
+		- DI:
+			- components / services are "injected" into your code.
+			- due to this, you don't have to explicitly instantiate your service.
+			- it will get instantiated automatically.
+			
+Web Server:
+	- On Windows, Web apps run on IIS.		
+	- IIS: Internet Information Server.
+		- Host for running web apps on Windows.
+	- all .NET-based web apps run on IIS.
+	- Earlier, for .NET web apps, it was mandatory to have IIS installed on dev machines.
+	- As Windows O/S progressed, IIS installation was restricted to Admins only.
+	- Usually, enterprises do not give local admin rights to everyone, including devs.
+	- Microsoft later provided a IIS-Express, a scaled down version of IIS as part of Visual Studio.
+	- But, IIS is ONLY for windows-based apps.
+	- So, what about .NET Core?
+	- Replaced IIS-Express with Kestrel.
+	- Kestrel is web host (server) that is used to run VS-based web apps.
+	
+			
+	api/values				GET		==> To fetch ALL records. GetAll()
+	api/values/1			GET		==> to fetch a particular record. GetById().
+	api/values				POST	==> create a record. Data is required.
+	api/values/2			PUT
+	api/values/3			DELETE
+	
+	api/customer/search		POST
+		Body:
+			{
+				"city": "mumbai",
+				"age": 25
+			}
+		
+Unit Testing:
+	In Unit Testing, we do not actually deal with "real data".
+		- use dummy data.
+		- do not use the DEV db.
+		- Definitely do not use the TEST, STAGE, PROD Db.
+		- "Mock" your data - temp/dummy data.
+
+For DI (Repository Pattern): (Psuedo-code):
+	1. Create an interface.
+	2. Implement the interface.
+	3. Implement it's ctor to get an instance of the DbContext (via DI).
+	4. Make calls to DbContext from implemented methods.
+	5. In the controller:
+		i. Remove all references to the DbContext.
+		ii. Change the ctor to get an instance of the Repo implemented.
+		iii. Change all methods to use the repo instead of the DbContext instance.
+	6. Inject the repo in Program.cs
+
+Generic Repository.
+Build APIs for all HTTP Verbs (GET POST PUT DELETE).	
+CORS => Cross-Origin Resource Sharing.
+Create API in .NET Framework 4.8 with DI.
+
+

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EFDemo.Entities
+namespace EFDemoCore.Entities
 {
     public class Order
     {
@@ -15,8 +15,8 @@ namespace EFDemo.Entities
         public string ShipName { get; set; }
         public string ShipCity { get; set; }
 
-        public Customer Customer { get; set; }
-        public Employee Employee { get; set; }
+        public Customer Customer { get; set; }      // Reference Navigation Property.
+        public Employee Employee { get; set; }      // Reference Navigation Property
         public virtual List<OrderDetail> OrderDetails { get; set; }
         
         //// Won't Work!!

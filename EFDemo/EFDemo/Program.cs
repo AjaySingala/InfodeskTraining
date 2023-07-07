@@ -48,7 +48,8 @@ namespace EFDemo
             //CreateCustomer();
             //CreateOrder("ALFKI");
 
-            CreateRegion();
+            //CreateRegion();
+            DeleteOrder();
         }
 
         static void GetAllCustomers()
@@ -543,6 +544,22 @@ namespace EFDemo
                 };
 
                 db.Regions.Add(region);
+                db.SaveChanges();
+            }
+        }
+
+        static void DeleteOrder()
+        {
+            Console.WriteLine();
+            Console.WriteLine("DeleteOrder()...");
+
+            using(var db = new NWDbContext())
+            {
+                var ordersToDelete = db.Orders
+                    .Include(o => o.OrderDetails)         // Cascade Deletes.
+                    .Where(o => o.OrderId > 11079)
+                    .ToList();
+                db.Orders.RemoveRange(ordersToDelete);
                 db.SaveChanges();
             }
         }

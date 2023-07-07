@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,22 @@ namespace EFDemo.Entities
             //base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<OrderDetail>()
                 .HasKey(t => new { t.OrderId, t.ProductId });
+
+            //modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+            //var eTypes = modelBuilder.Model.GetEntityTypes();
+            //foreach (var type in eTypes)
+            //{
+            //    var foreignKeys = type.GetForeignKeys();
+            //    foreach (var foreignKey in foreignKeys)
+            //    {
+            //        foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+            //    }
+            //}
+
+            //modelBuilder.Entity<Order>()
+            //    .HasMany(o => o.OrderDetails)
+            //    .WithRequired(od => od.Order)
+            //    .WillCascadeOnDelete(false);
         }
     }
 }
