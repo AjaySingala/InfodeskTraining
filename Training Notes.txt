@@ -477,4 +477,115 @@ Build APIs for all HTTP Verbs (GET POST PUT DELETE).
 CORS => Cross-Origin Resource Sharing.
 Create API in .NET Framework 4.8 with DI.
 
+Data Annotations:
+[Table]
+[Key]
+[Column("fname")]
+[MaxLength(100)]
+[StringLength(10)]
+[StringLength(10, Error="Username cannot be more than 10 characters.")]
+[StringLength(10, MinimumLength=5, Error="{0} length must be between {2} and {1} characters.")]
+public string Username {get;set;}
 
+Entered value: abc
+Username must be between 5 and 10 characters.
+
+[Required]
+[Range(18, 60)]
+public int Age {get;set;}
+
+public string Password {get;set;}
+
+[Compare(nameof(Password), ErrorMessage="Passwords do not match")]
+public string ConfirmPassword {get;set;}
+
+[EmailAddress]
+[Phone]
+[Url]
+
+public class MyCustomAttribute : ValidationAttribute
+{
+	protected override ValidationResult IsValid(object val, ValidationContext context)
+	{
+		var customer = (Customer)context.ObjectInstance;
+		var type = (CustomerTypeEnum)val;
+		// validation.
+		return ValidationResult.Success;
+	}
+}
+
+[MyCustom]
+
+
+ASP.NET (.NET Framework 4.8):
+	- two types web application with UI.
+		1. Web Forms.
+		2. MVC apps.
+	- Console apps:
+		app.config
+	- Web apps (incl. mvc):
+		Web.config
+	- Starting point is Global.asax and not Program.cs.
+		- Method is Application_Start().
+	- API controllers inherit from ApiController
+		- Web forms inherit from Controller.
+	- The default controller is HomeController.
+	- The default action is Index().
+	- You do not need to specify the [HttpGet] [HttpPost] etc. attributes explicitly.
+		- as long as your methods are named properly.
+	- You can specify [HttpGet] [HttpPost] etc.attribute if you want.
+		- You must do that if there are multiple GET, POST etc. methods.
+	
+Using Generics to create "common" or "generic" interfaces.
+	List<int>
+	List<string>
+	List<Customer>
+	List<Product>
+	
+In .NET Framework 4.8, for DI, we have to install a package:
+	Unity.Mvc5		==> Web forms.
+	Unity.WebApi	==> Web APIs.
+
+	install-package Unity.WebApi
+	Add DI code to UnitConfig.RegisterComponents() method:
+		container.RegisterType<IDataRepository<Customer>, CustomerRepository>();
+
+	In Global.asax.cs file's Application_Start() method:
+		UnityConfig.RegisterComponents();
+
+
+Consuming an API:
+	- .NET
+	- Angular / React 
+	- JavaScript
+	
+install-package Microsoft.AspNet.WebApi.Client
+
+Asynchronous programming in .NET:
+	- async-await
+
+sync = synchronous
+async = asynchronous
+
+public void foo()
+{
+	// code
+	doSomething();
+	// code.
+}
+
+async method always returns either void or a "Task" or "Task<T>" type.
+
+CORS: Cross-Origin Resource Sharing
+Enable CORS on our API to allow client applications (running on different "origins") to consume the API.
+One client: Full access to the API.
+2nd client: Access to only GET methods.
+
+
+Minimal APIs:
+	- No controllers.
+	- Are to be created only for simple or small APIs.
+	
+Asynchronous Programming in C#:
+	async await
+	
