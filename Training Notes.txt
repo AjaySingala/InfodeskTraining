@@ -588,4 +588,114 @@ Minimal APIs:
 	
 Asynchronous Programming in C#:
 	async await
+	Synchronous process is where you have to wait for a long running process to complete before you can proceed with any other operation.
 	
+	LP Started
+	(wait 4 seconds)
+	LP completed
+	SP started
+	SP completed
+	
+	Async Programming is the code gets executed on a thread without waiting for a long running task to be completed.
+	
+	To make a process asynchronous:
+		- you have to mark that method as async.
+		- async methods return either a void, Task, Task<T>.
+		- when calling that method, call it with await.
+		
+	LP started (wait 4 seconds in the background)
+	SP started
+	SP completed
+	LP completed (after 4 seconds)
+	
+Making Breakfast:
+	Make coffee							async
+	Pour juice glass					sync
+	Toast 2 slices bread				async
+	Apply butter in the bread slices	sync
+	Fry 2 eggs							async
+	
+	Approach #1:
+		Task<Egg> te = FryEggs();
+		Task<Coffee> tc = MakeCoffee();
+		Task<Toast> tt = ToastBread();
+		
+		var toast = await tt;
+		ApplyButter(toast);
+		
+		var eggs = await te;
+		
+		var coffee = await tc;
+		PourCoffee();
+		PourJuice();
+		
+		HaveBreakfast();
+
+	Approach #2:
+		Task<Egg> te = FryEggs();
+		Task<Coffee> tc = MakeCoffee();
+		Task<Toast> tt = ToastBread();
+		
+		await Task.WhenAll(te, tc, tt);
+		ApplyButter();
+		PourCoffee();
+		PourJuice();
+		HaveBreakfast();
+
+	Approach #3:
+		Task<Egg> te = FryEggs();
+		Task<Coffee> tc = MakeCoffee();
+		Task<Toast> tt = ToastBread();
+		
+		var breakfastTasks = new List<Task> { te, tc, tt };
+		while(breakfastTasks.Count > 0)
+		{
+			Task finishedTask = await Task.WhenAny(breakfastTasks);
+			if(finishedTask == te)
+			{
+				Console.WriteLine("Eggs are ready.");
+			} else if(finishedTask == tc)
+			{
+				Console.WriteLine("Coffee is ready.");
+				PourCoffee();
+			} else if(finishedTask == tt)
+			{
+				Console.WriteLine("Bread Toast is ready.");
+				ApplyButter();
+			}
+			breakfastTasks.Remove(finishedTask);
+		}
+		
+	
+async Scheduler()
+{
+	while(true)
+	{
+		get schedule from DB.
+		if it is time, run the process.
+		wait for it to finish.
+		mark the scheduled time process as done.
+	}
+}
+
+
+Callbacks:
+	delegates
+	Name of the delegate becomes it's type.
+	
+	Events + Delegates
+	click of a button
+	
+Assignment:
+	The banking app, convert it into APIs.
+	Use DB (EF Core).
+	Have as many CRUD operations.
+	Separate layers (projects) as needed.
+	Use Repository Pattern.
+
+	Nice to haves:
+		- Unit Tests using xUnit.
+		- Logging to a file
+			- NLog
+			- Serilog
+			
