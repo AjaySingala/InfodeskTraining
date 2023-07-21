@@ -678,7 +678,6 @@ async Scheduler()
 	}
 }
 
-
 Callbacks:
 	delegates
 	Name of the delegate becomes it's type.
@@ -699,3 +698,406 @@ Assignment:
 			- NLog
 			- Serilog
 			
+Unit Testing:
+	- Using xUnit.
+	Types of testing:
+		- System testing: Testing / QA team - end to end testing.
+			- Test cases
+		- Load testing / Performance testing.
+			- Script or automated tool.
+		- Smoke testing.
+		- Security Penetration Testing.
+			- SecPen Testing
+		- Unit Testing:
+			- Is to be done by DEVs.
+			- Code has to be written.
+			- Takes ~25-40% of the effort taken to develop the actual feature to be tested.
+			- Test each and every method that has been implemented.
+			- Test not just the valid "params" or the Happy Path.
+			- Must test for invalid values / scenarios as well.
+			- Including any exceptions that may occur.
+			- Unit Test should always be done using dummy data.
+				- Should not directly change the database in use (by DEVs, QA, UAT, Staging, PROD).
+				- Can use "mocking" of data.
+			- TDD: Test Driven Development.
+				- You write the unit tests first and then the actual feature code.
+				- Initially, all your unit tests should fail.
+				- As you complete your feature implementation, the unit tests will keep passing.
+			- DEVs create their own unit test cases.
+				- DEVs could take the test cases from the QA team.
+			- AAA:
+				Arrange, Act & Assert.
+				
+Arrange:
+	Get your code ready to be tested.
+	Creating instance of classes.
+	Initialize values etc.
+Act:
+	Call the method to be tested.
+	Perform the action and get the result back.
+Assert:
+	Validate the result.
+	
+			- Code coverage:
+				- How many lines of code are covered by the unit tests?
+				
+public bool DoSomething(string val)
+{
+    bool isValid = true;
+	
+	// code here.
+	// code here.
+	if(cond1)
+	{
+		// code here.
+		isValid = false;
+	}
+	// code here.
+
+	if(cond2)
+	{
+		// code here.
+		isValid = false;
+	}
+	// code here.
+
+	return isValid;
+}
+				
+		
+API
+	Tests
+Service
+	Tests
+Repository
+	Tests
+Model (DbContext, Entities etc.)
+
+Moq: Mocking Framework.
+	install-package Moq
+		- in the unti test project.
+		
+
+Enum Flags
+Null Operator
+Access modifiers: class, methods, fields
+Partial classes
+Lambda
+Local methods
+yield
+Record
+Attribute
+Event
+
+Enum Flags:
+==============
+public enum Status:
+{
+	New,
+	InProgress,
+	Approved,
+	Rejected,
+	OnHold
+}
+
+var docStatus = Status.Approved;
+
+public enum Suits
+{
+	Spades = 1,
+	Clubs = 2,
+	Diamonds = 3,
+	Hearts = 4
+}
+
+var myCards = Suits.Clubs;
+var myCards = Suits.Hearts;
+
+var myCards = Suits.Clubs | Suits.Hearts;
+
+Logical operators and Bitwise operators
+&&
+||
+
+&
+|
+
+https://www.programiz.com/c-programming/bitwise-operators
+Be careful when using Enum Flags (because of Bitwise operators):
+	- Having negative numbers in contants.
+	- Good pratice to have a None = 0.
+	- None (0) cannot be used with Bitwise AND (&).
+		- It will always give 0.
+		
+Null Operator:
+==============
+int i = 0
+i = null;
+
+int? i = 0;
+i = null;
+
+int? i = null;
+bool isNull = false;
+if(i == null)
+	isNull = true;
+//else
+//	isNull = false;
+Console.WriteLine($"Is 'i' null?: {isNull}");
+
+var isNull = (i == null) ? true : false;		// Ternary operator ?:.
+				cond        true    else
+
+var res = (cond) ? foo() : foobar()
+
+var isNull = false;
+:
+isNull = i ?? true;
+
+int? i = null;
+int j = i ?? 0;		// j = 0;
+
+int? i = 10;
+int j = i ?? 0;		// j = 10;
+
+int? i = null;
+int j = 0;
+if(i)	// if i is null.
+{
+	j = -1;
+} else 
+{
+	j = 1;
+}
+What will be the value of j here if i is NULL and if i is NOT NULL?
+
+Access modifiers:
+=================
+private
+public
+protected
+internal
+
+private: member accessible only within the class where it has been declared.
+public: member accessible to all other classes from anywhere.
+protected: member is accessible within the class where it has been declared and by derived classes.
+
+public class ClassA
+{
+	protected void X()
+	{
+	}
+	
+	private void Y()
+	{
+		X();
+	}
+}
+
+public class ClassX
+{
+	public void foo()
+	{
+		var objA = new ClassA();
+		objA.X();	// Not accessible.
+	}
+}
+
+public class ClassB : ClassA
+{
+	public void foobar()
+	{
+		this.X();	// accessible.
+	}
+}
+
+internal: keyword. members are visible only wihtin the files in the same assembly.
+
+API			- Assembly (.dll)
+	ClassA (of Services) is not accessible here).
+Services	- Assembly (.dll)
+	ClassA.cs:
+		internal class ClassA { }
+		
+	ClassB.cs:
+		ClassA is accessible in ClassB.
+		
+Repository	- Assembly (.dll)
+	ClassA (of Services) is not accessible here).
+Entities	- Assembly (.dll)
+	ClassA (of Services) is not accessible here).
+
+Partial classes:
+================
+- used to split definition of classes / interface into multiple code files.
+
+A.cs
+public partial class Employee
+{
+	public void DoWork() { }
+}
+
+B.cs
+public partial class Employee
+{
+	public void GoToLunch() {}
+}
+
+Code is generated by the the framework or the IDE.
+.edmx
+.edmx.cs
+
+// file1.cs
+partial void DoWork();
+
+// file2.cs
+partial void DoWork()
+{
+	// code here.
+}
+
+Extension Methods: used when you do not have access to the code.
+	string name = "My name is john Smith";
+	
+	want this: "My Name Is John Smith";
+	CapitalizeWords()
+	
+public static class MyStringExtensions
+{
+	public static string CapitalizeWords(this string someString)
+	{
+		// code here.
+		return result;
+	}
+}
+
+string name = "My name is john Smith";
+Console.WriteLine(name.CapitalizeWords());
+
+Local Methods / Functions:
+==========================
+Introduced in C#7.0.
+Declare a method inside the body of another method.
+Scope of the local method is limited to the method in which it has been created.
+
+void foo(string msg)	// container function/method.
+{
+	int x = 10;	// variable declared in the container ().
+	
+	void foobar()
+	{
+		int y = 0;	// accessible only within the local ().
+		x = 20;		// container vars are accessible in local ().
+		Console.WriteLine(msg);	// can access container method's params.
+	}
+
+	void foobar(int a) {}		// cannot overload local methods.
+	
+	string abc(string a, string b)
+	{
+		return "abc";
+	}
+	
+	// code.
+	foobar();
+	// code.
+	var result = abc("john", "smith");
+}
+
+do()
+{
+	foo().foobar();	// not allowed.
+	foobar();		// not allowed.
+}
+
+Summary of local methods:
+	- multiple local methods allowed.
+	- can access variables defined in the container ().
+	- cannot be static.
+	- cannot overload.
+	- can have return types and params.
+	- can be async.
+	- cannot specify access modifiers.
+	
+yield:
+======
+yield statement - provides the next element.
+
+
+Record:
+=======
+Introduced C# 9.0.
+
+public record Person(string firstname, string lastname, string city);
+
+very similar to creating a class:
+public class Person
+{
+	public string firstname {get;set;}
+	public string lastname {get;set;}
+	public string city {get;set;}
+	
+}
+
+To use a record, just create an instance:
+Person p1 = new Person("John", "Smith", "Boston");
+
+
+x = 1
+y = 1
+
+Attribute:
+==========
+[ApiController]
+[Route]
+[HttpGet]
+[HttpPost]
+[EnableCors]
+[Required]
+[StringLength]
+[EmailAddress]
+
+
+Can be provided on classes, methods, properties.
+
+When we use attributes to define the behavior of class/method/property, it is a "declarative" way of coding.
+
+[Obsolete("SomeClass will become obsolete. Use NewClass instead.")]
+public class SomeClass
+{
+}
+
+public class NewClass
+{
+}
+
+Arguments to the ctor are limited to simple types/literals: bool, int, string, enum, array of these types.
+Cannot use expressions.
+Cannot use variables.
+
+Custom Attributes: 
+	- Derive from Attribute.
+	- Attribute usage (where can it be applied: class, method, property].
+
+Action Filters:
+===============
+Attributes applied on Controller Actions (methods).
+
+Types of Filters in ASP.NET:
+	- Authorization Filter.
+	- Resource Filters: OnResourceExecuting, OnResourceExecuted.
+	- Action Filters: On...Executing, On...Executed.
+	- Exception Filters.
+	- Result Filter: used to modify the result.
+
+Event:
+======
+A late binding mechanism. Work with Delegates.
+Events are a way for an object to broadcast to it's subscribers that something happened.
+Subscribing to an event creates a coupling between the Publisher and the Subscriber (Pub-Sub model).
+Based on the "Observer Design Pattern".
+
+The class that raises the event is known as the Publisher.
+The class that receives the notification is the Subscriber.
+There can be >1 subscribers to an event.
+

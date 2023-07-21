@@ -7,12 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstCoreAPI", "FirstCoreAP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StandardWebApi", "StandardWebApi\StandardWebApi.csproj", "{56D0C315-D78C-472B-91BE-82DA497599DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstCoreAPIClient", "FirstCoreAPIClient\FirstCoreAPIClient.csproj", "{4421BE94-1389-43AD-B3AE-0937578A44E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstCoreAPIClient", "FirstCoreAPIClient\FirstCoreAPIClient.csproj", "{4421BE94-1389-43AD-B3AE-0937578A44E1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C28EBCCF-26DB-46CB-8925-A5D9EBBB889D} = {C28EBCCF-26DB-46CB-8925-A5D9EBBB889D}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstMinimalAPI", "FirstMinimalAPI\FirstMinimalAPI.csproj", "{1965BA6B-6614-4E02-8779-833266BDC9D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstMinimalAPI", "FirstMinimalAPI\FirstMinimalAPI.csproj", "{1965BA6B-6614-4E02-8779-833266BDC9D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstCoreAPI.Tests", "FirstCoreAPI.Tests\FirstCoreAPI.Tests.csproj", "{B0698362-4D4B-4D83-B1A7-4486C3E9A3DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,10 @@ Global
 		{1965BA6B-6614-4E02-8779-833266BDC9D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1965BA6B-6614-4E02-8779-833266BDC9D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1965BA6B-6614-4E02-8779-833266BDC9D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0698362-4D4B-4D83-B1A7-4486C3E9A3DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0698362-4D4B-4D83-B1A7-4486C3E9A3DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0698362-4D4B-4D83-B1A7-4486C3E9A3DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0698362-4D4B-4D83-B1A7-4486C3E9A3DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
