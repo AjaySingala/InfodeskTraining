@@ -14,6 +14,11 @@ namespace EventsDemo
         {
             Console.WriteLine($"Starting process with {msg}...");
             Broadcast(msg);
+            foreach (var sub in Done.GetInvocationList())
+            {
+                Console.WriteLine($"{sub.Method.Name}");
+            }
+
         }
 
         public virtual void Broadcast(string msg)

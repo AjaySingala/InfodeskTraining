@@ -1,0 +1,307 @@
+VMs
+App Services
+VNet
+Azure SQL
+Azure Functions
+Azure Service Bus
+Azure Storage:
+	Blobs
+	Queues
+	Tables
+
+Azure DevOps
+	CI/CD
+	Creating and managing Build + Release Pipelines
+		- GUI
+		- YAML
+		
+LRS: Locally Redundant Storage.
+	- Data is replicated withing a single DC.
+ZRS: Zone Redundant Storage.
+	- Data is replicated across 3 Zones.
+GRS: Geo-Redundant Storage.
+	- Replicate data across regions.
+GZRS: Geo Zone Redundant Storage.
+	- Across regions, across zones.
+	
+Connect to remote VM (Linux):
+ssh -i <path to .pem file> username@ipaddress
+ssh -i ./ajsvm125July-1_key.pem azureuser@20.76.14.154
+
+
+for the .pem file:
+	- Unblock
+	- Disable inheritance (security tab -> advanced).
+	- Add current user as owner (security tab -> advanced).
+
+ajs-vnet-26Jul
+ajspublicvm1
+	azurevm1user
+	ajspublicvm1_key
+	ajspublicvm1-ip
+	20.86.36.199
+	ajs-vnet-26Jul/public-subnet
+	
+ajs-pvtvm2-win
+	azurevm2admin
+	Password@123
+	
+	For Windows VMs, to allow incominbg ping requests, enable ICMPv4 protocol.
+		In Powershell:
+			New-NetFirewallRule -DisplayName "Allow ICMPv4-In" -Protocol ICMPv4
+			
+1.2.3.4/16   Allow SSH
+5.6.7.8/16	Deny SSH
+3.5.8.9/16 Allow SSH
+
+Azure Storage:
+==============
+	Blobs (similar AWS S3)
+	Queues
+	Tables
+	Files
+	
+You need a Storage Account.
+Azure Blob Storage:
+-------------------
+	- Similar AWS S3.
+	- Store:
+		- Files.
+		- Images.
+		- Videos.
+		- Logs.
+		- Backups.
+		- VM images.
+	- Access via:
+		- Browser
+		- API (Azure SDK)
+		- Azure CLI
+		- Powershell
+	- Create a "container" first.
+	- Then store blobs in containers.
+	- Container is similar to a Bucket in AWS S3.
+	- URL for blobs:
+https://ajsstoragedemo.blob.core.windows.net/ajs-blob-container/Azure%20Notes.txt
+https://<storageaccountname>.blob.core.windows.net/<containername>/<blob>
+
+Azure Queue Storage:
+--------------------
+For storing large of messages.
+Messages in the queue can be access from anywhere.
+Max size of a message can be 64KB.
+A queue may contain millions of messages.
+	- based on the capacity of the storage account.
+	
+Queue Storage:
+	- Create a "queue" first.
+	- So, the "queue" here is the "container".
+	- Put messages in a queue.
+	
+https://<storageaccountname>.queue.core.windows.net/<queuename>
+https://ajsstoragedemo.queue.core.windows.net/ajs-first-queue
+	- Peek the queue to get the first message.
+	- Process it.
+	- Dequeue it to remove it from the queue.
+	
+Dead Letter Queue (DLQ):
+	- A message has invalid data (metadata) and cannot be processed.
+	- The client (that is processing the message) will put it back in the queue (not dequeue).
+	- If a message is "Requeued" more than x no. of times, the message is moved to DLQ.
+	- The DLQ message can be fixed and re-queued to the original queue.
+	- Or just delete from the DLQ if it is indeed invalid!
+	
+Azure Table Storage:
+--------------------
+NoSQL storage.
+NoSQL: Not only SQL.
+
+SQL vs NoSQL:
+- SQL there is predefined set schema.
+	- Create a table with columns and their types.
+		id	firstname	lastname
+		101	john		smith		mumbai
+- NoSQL does not have any predefined set schema.
+	101	john	smith
+	102 mary	jane	mumbai
+	103 				indore	MP
+	104 room no.4  | abc road | pune / MH | 432198
+	
+	They are document-based - JSON
+	{
+		"id": 101,
+		"firstname": "john",
+		"lastname": "smith"
+	}
+	
+	{
+		"id": 102,
+		"firstname": "mary",
+		"lastname": "jane",
+		"city": "mumbai"
+	}
+
+	{
+		"id": 104,
+		"unit": "room no. 4",
+		"street": "abc road",
+		"city": "pune",
+		"state": "MH",
+		"pincode": 432198
+	}
+
+NoSQL is not relational!
+
+A Single NoSQL table that stores data for ALL your entities.
+
+Azure Table Storage Concepts:
+- create a table.
+- table will have entities.
+
+https://<storageaccountname>.table.core.windows.net/<tablename>
+https://ajsstoragedemo.table.core.windows.net/ajscustomer
+
+Earlier, Azure only had Tables.
+Now, all "Tables" are actually CosmosDB-based tables.
+
+Azure CosmosDB Table Concepts:
+- CosmosDB Account
+- Container (DB)
+- Tables
+- Entities
+
+Azure Functions:
+================
+Similar AWS Lambda (functions)
+Serverless solution with less code, maintain less infrastructure, save on cost.
+No need to worry about deploying the infra and maintain servers.
+The CSP will provide the infra and the updates for that.
+
+PaaS model.
+
+Scenarios:
+----------
+Process file uploads.
+Process data in real time.
+Run scheduled tasks.
+When there are changes in a DB.
+
+Language support:
+-----------------
+C#, Java, JavaScript, Python, Go, Rust, Powershell.
+
+Process Models for .NET Functions:
+----------------------------------
+1. In-process:
+	- Your function runs in the same process as the host of the function process.
+	- Supports only LTS version of .NET (.net core versions).
+2. Isolated worker process:
+	- Your function runs in a separate .NET worker process.
+	- Use with supported .NET (core) and .NET Framework (v4.8).
+
+Windows Services: Run
+
+http://...../HttpExample?name=John
+
+Publish from VS first time:
+- Create a publish profile.
+	- Azure settings.
+		- Resource Group.
+		- App Service for the function.
+	- Storage connection connection settings.
+
+https://ajsfunctionappjun2023.azurewebsites.net/api/HttpExample?
+
+Durable Functions:
+------------------
+- Extensions of Azure Functions.
+- Stateful functions.
+- Serveless compute.
+- Orchestrator functions.
+	- Define a flow.
+- Languages:
+	- .NET (C#, F#).
+	- JavaScript / TypeScript.
+	- Java.
+	- Python
+	- Powershell
+
+Durable Function Application Patterns:
+--------------------------------------
+a.k.a Long running functions.
+1. Chaining functions.
+	- chain of functions called one after the other.
+2. Fan-out / Fan-in: (fork-out / fork-in)
+	- execute multiple functions in parallel.
+	- wait for all functions to finish.
+	- Aggregate the results and return.
+3. HTTP Async
+4. Monitor
+5. Manual (Human) interaction.
+	- this can be tricky, what if the person does not attend to the interaction.
+6. Aggregator
+	- works with event data.
+	- aggregates the event data over a period of time.
+	- outputs into a single file/entity.
+	- input (the events that come in), could be coming from multiple sources.
+		- batch of data.
+		- streaming.
+
+Azure Service Bus:
+==================
+A fully managed enterprise message broker.
+Queues and Topics.
+Decouple applications / services from each other.
+Messaging: data sent/recd. to/from a queue/topic.
+Load balancing: allow multiple consumers to read from a queue at the same time and obtain exclusive ownership to specific messages.
+Topics (and subscriptions):
+	Queue: 1:1 relationship.
+	Topics: 1:n relationship.
+	Subscribers can subscribe to particular messages in the topic (stream).
+Transactions: perform multiple operations in the scope of a txn.
+
+No need to worry about h/w failures.
+Auto failover in-case of failures.
+
+Service Bus
+	Namespaces
+		Queues
+		Topics
+Auto-forwarding
+	-from a queue/topic to another queue/topic in the same namespace.
+Dead-lettering
+Scheduled delivery:
+	- delayed processing.
+	- scheduled job.
+Message deferral:
+	- if a consumer is not able to process a msg currently for any reason, the retrieval of the message can be deferred to a later point in time.
+Filters:
+	- subscriber can define which msgs they want to subscribe to (receive) from a topic.
+Auto delete on idle:
+Duplicate detection:
+Integration:
+	- Azure Functions
+	- Logic Apps
+	- Event Grid
+	- Stream Analytics
+	- Dynamics 365
+	
+Service Bus namespace name:
+	- unique across azure.
+	- 6 - 50 chars.
+	- letters, numbers, -
+	- start letter and end with a letter / number.
+	- cannot end with -sb or -mgmt
+		ajs-servicebus-sb
+		ajs-servicebus-mgmt
+
+Storage Queue: 64KB
+	- can handle more than 80GB storage of messages.
+	- order is not guaranted.
+	- At-least-once.
+	- no batch send.
+SB Queue: 256KB, 1MB.
+	-if the size of the service bus queue is more than 80GB, then you might as well use Storage Queue.
+	-FIFO
+	- At-least-once: 
+	- At-most-once: read and delete.
+	- allows batch send.

@@ -24,6 +24,9 @@ namespace EventsDemo
             eo.Done += EventOrder_Handler1;
             eo.Done += EventOrder_Handler2;
             eo.Done += EventOrder_Handler1;
+            eo.Done += EventOrder_Handler3;
+            eo.Start("abcd");
+            eo.Done -= EventOrder_Handler1;
             eo.Start("abcd");
         }
 
@@ -35,6 +38,11 @@ namespace EventsDemo
         static void EventOrder_Handler2(object sender, string e)
         {
             Console.WriteLine($"EventOrder_Handler2: Completed process for {e}");
+        }
+
+        static void EventOrder_Handler3(object sender, string e)
+        {
+            Console.WriteLine($"EventOrder_Handler3: Completed process for {e}");
         }
 
         //static void MyProcessCompleted_Handler(object sender, EventArgs e)
