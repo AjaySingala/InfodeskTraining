@@ -1,0 +1,222 @@
+DevOps:
+=======
+- Development and Operations.
+- Automating the process of Dev and Ops team.
+	- After code push to a repo, it is picked from there and deployed to server.
+	- Dev, IT, automated.
+	- Ops team required to manage the entire deployment process (servers, etc.).
+	
+Traditionally:
+- DEVs would push code to a repo.
+- Devs would also create a "release note".
+- Devs would also specify the steps to be taken to deploy the app.
+- Devs would inform Ops team about a release to be done and share the release notes and deploy steps.
+- Ops would take the latest code and deploy to a server.
+	- based on the steps provided by the Dev team.
+
+This was for DEV / TEST environment.
+Same would be done for all other envs as well:
+	DEV
+	TEST
+	STAGE
+	UAT (User Acceptance Testing)
+	PRE-PROD
+	PROD
+
+DEV Team would be quite huge at times.
+Ops team is relatively small.
+Ops team is shared b/w DEV teams.
+
+3-4 DEV teams : 2 Ops members.
+T1 asks the Ops team to deploy their code.
+T2 asks the Ops team to deploy their code.
+T3 asks the Ops team to deploy their code.
+	- T3 wait for Ops team to be available.
+If one of the Ops team member is absent/not well/leaves the company,
+	- the wait is even longer.
+Priorities.
+
+Deployments and post-deployment test failing.
+
+DEVs should also know quite a bit of Ops (deployment).
+Ops should also know a bit about DEV (scripting).
+	- YAML.
+	- Ansible (IaC) - Configuration of servers.
+	- Terraform (IaC) - Provisioning of servers.
+		- VMs
+		- Containers
+			- Docker.
+			- Kubernetes.
+
+DevOps: Both combined.
+
+Branching Strategy:
+===================
+Determining which branch serves what purpose.
+- main (master)
+	- dev
+		- DEVs are not supposed to commit directly to dev branch.
+		- feature (user stories) branches.
+		- feature1: Register a new customer.
+		- feature2: Login
+			- 20 hours
+			- DEVs must do a "git pull" at least once-twice a day
+			- First thing in the morning.
+			- Before leaving the day.
+			- DEFINITELY before merging back to DEV.
+		- feature3: 
+	- stage
+	
+Always commit+push code to your feature branch at least twice a day.
+	- Once before lunch break.
+	- Then, before you sign-off for the day.
+	- The code being committed MUST NOT break the build!!!
+	
+Pull Request:
+-------------
+Review code and merge.
+
+Dev Env is used by DEV team to do Integration Testing.
+Once this is done and everything ok, DEV team will ask the TEST/QA to do their testing.
+But, QA does not do their testing on DEV env.
+They will do it on their own TEST env.
+
+The main (master) branch at any given time has the code that has been deployed to PROD.
+
+How can we (DEV Project team) give the users what they want as soon as possible?
+As and when features (user stories) are completed, release (show) them to the user and get a feedback.
+Breakup up requirements into small-small pieces.
+Each piece becomes a user story.
+The user story should be such that it can be completed within one sprint (usually 2-weeks).
+Every 2-weeks, show something to the user (Product Owner) and get a feedback.
+This model of involving users frequently is what the Agile model all about.
+
+TODO list in a sprint:
+- User story detailing (Sprint grooming).
+- DEV
+- unit testing
+- deployment (automated).
+- QA.
+- Bug fixes (of the current sprint).
+- (PROD) Bug fixes from previous Sprint.
+
+QA should get the TEST env at least 3 days before demo-day (last day of the sprint).
+
+It is possible that there may be some issues that are not fixed for the demo, but they do not break the system/build. a.k.a. "known issues".
+
+Known issues are spilled over into the next sprint.
+
+Wednesday - Day 1 of Sprint
+Tuesday 2 weeks later is the last day of the Sprint.
+2nd Thursday or Friday give to QA.
+
+PBI (Product Backlog Items) are one-liners to begin with.
+- as a user, I should be able to register myself as a customer.
+- as a user, I should be able to log on.
+- as a user, I should be able to search for a product.
+
+Prioritize the PBIs.
+
+How many Sprints?
+	- Each Sprint is of 2-weeks.
+	- after every 4 sprints, we will make a release (to PROD) - Milestone.
+Which PBIs will be part of which Sprint?
+
+During the Sprint:
+	- development / unit testing / qa...
+	- bug fixes of current sprint.
+	
+Sprint 1, team completed 3 user stories (US1, US2, US3).
+Sprint 2, team has to pick up 4 more (US4,5,6,7).
+	- parts of US6 could not be completed.
+Sprint 3, team was supposed to pic 4 more (US8,9,10,11).
+	- now they have to pick the incomplete parts of US6 from previous sprint as well.
+	
+In Agile:
+- you cannot change the duration of Sprints ad-hoc.
+	- Sprint duration cannot change.
+	- change the scope of the sprint.
+	
+Story Points:
+-------------
+Giving a weightage to a user story depending on it's complexity.
+It is usually numerical.
+It could be: Low, Medium, High, Critical.
+No way to measure it.
+Numbers can be measured.
+
+1 SP = 7 hours
+so, 15 hours = 2 SP.
+Approx, 1 SP = 1 day's work.
+20 hour work: 3 SPs.
+
+4, 7, 8,9.
+
+Fibonacci sequence: 1,1,2,3,5,8,13...
+US: 3, 5 or max 8.
+	- consider the following things:
+		- dev work.
+		- unit testing.
+		- bug fixes.
+		- meetings.
+		- qa.
+			- creating test cases
+			- exeucting test cases
+		- DB changes.
+		- BA to elaborate the US requirements.
+If a US has > 8, then it should be broken up into small stories (cannot be completed in a single Sprint).
+
+Depending on no. of resources in the team, you decide how many max SPs can be taken in a Sprint.
+- 4 DEVs, 2 QA, 1 BA.
+- Each member can take a max of 4 SPs in each Sprint.
+- so, a max of 28 SPs ((4+2+1) * 4).
+
+Capacity (no. of SPs) of the team to deliver in every Sprint is known as the "Velocity" of the team.
+
+US1 5
+US2 3
+US3 8
+US4 5
+US5 5
+US6 5
+
+Sprint 3, team was supposed to pic 4 more (US8,9,10,11).
+	- now they have to pick the incomplete parts of US6 from previous sprint as well.
+Capacity is 21 SPs:
+US8 5
+US9 3
+US10 8
+US11 5
+
+US6 from previous sprint, incomplete work to be completed, an additional 3 points.
+
+US12,13,14: 20
+US13: very easy than expected. Complete it quicker. Instead of taking 4 days, it got done in 1 day. 
+Added US15 to the Sprint which was 5 SPs.
+
+US12,13,14 (8): 20
+US14: very very hard.
+
+Daily Standups (DSUs):
+	- First thing before start of the day.
+	- 15 minutes
+	- everyone is standing.
+	- everyone has to answer 3 questions:
+		- What did you do yesterday?
+		- What are you doing today?
+		- Any impediments (blockers)?
+Retrospectives (last day of the Sprint):
+	- everyone has to answer 3 questions:
+		- What went well?
+		- What did not go well?
+		- How do we improve?
+	
+3 points === 12 hours NOT NECESSARY
+3 points takes ~14 hours
+3 points takes 10 hours
+
+SonarQube / SonarCloud
+- Code Smell.
+- Secure analysis.
+- Static analysis.
+- Technical Debt.
