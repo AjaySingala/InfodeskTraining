@@ -1,0 +1,313 @@
+APIs:
+api/users
+{[
+	id
+	firstname
+	lastname
+	age
+	city
+	state
+	:
+]}
+
+api/users/123
+{
+	id
+	firstname
+	lastname
+	age
+	city
+	state
+	:
+}
+
+Client:
+id
+id, firstname
+firstname, lastname, city
+
+Field filtering is to be done by client.
+Drawback #1 of APIs: Overfetching.
+
+Drawback #2 of APIs: Underfetching.
+api/users/123
+{
+	id
+	:
+	:
+}
+
+api/users/123/address
+{[
+	"work",
+	"home"
+]}
+
+GraphQL tries to solve ths problem.
+The client decides what fields are required and from where.
+For a list of users:
+id
+firstname
+lastname
+
+GET
+Client:
+query {
+	allUsers {
+		id,
+		firstname,
+		lastname
+	}
+}
+
+Server:
+allUsers()	// API Endpoint
+{[
+	id
+	firstname
+	lastname
+	age
+	city
+	state
+	:
+]}
+
+allUsers()	// API Endpoint
+{[
+	id
+	firstname
+	lastname
+	age
+	city
+	state
+	:
+	addresses: [
+		street, city, state, pincode
+		:
+	]
+]}
+
+query {
+	allUsers {
+		id,
+		firstname,
+		lastname,
+		addresses {
+			city
+		}
+	}
+}
+
+query {
+	allUsers {
+		id,
+		firstname,
+		lastname,
+		addresses {
+			city,
+			state
+		}
+	}
+}
+
+APIs will have multiple endpoints for separate entities.
+api/users		get all users
+api/users/123	gets a single user
+api/products		get all products
+api/products/345	get a single product
+
+In GraphQL endpoint:
+api/graphql
+
+Schema Definition Language:
+type Person {
+	id: ID!
+	name: String!
+	age: Int!
+	posts: [Post!]!
+}
+
+type Post {
+	id: ID!
+	title: String!
+}
+
+Scalar types:
+String
+Int
+Float
+Bool
+ID
+
+query {
+	allPersons {
+		name,
+		posts {
+			title
+		}
+	}
+}
+
+{
+	"allPersons": [
+		{
+			"name": "John Smith", 
+			"posts": [
+				{"title": "Title One"}
+				{"title": "Title Two"}
+			] 
+		},
+		{
+			"name": "Mary Jane" ,
+			"posts": [
+				{"title": "Title abcd"}
+				{"title": "Title efgh"}
+			] 
+		},
+		{"name": "Alice Brook" }
+	]
+}
+
+query {
+	person(id: "2") {
+		name,
+		posts {
+			title
+		}
+	}
+}
+
+query {
+	person(name: "John Smith") {
+		name,
+		posts {
+			title
+		}
+	}
+}
+
+CRUD: GET (RETRIEVE)
+Mutations: are GraphQL syntax to create, update or delete data.
+mutation {
+	createPerson(name: "Bob", age": 32) {
+		id,
+		name,
+		age
+	}
+}
+
+"createPerson" {
+	"id": "123",
+	"name": "Bob",
+	"age": 32
+}
+
+NodeJs, JavaScript, VS Code, Apollo Server.
+
+npm init --yes && npm pkg set type="module"
+npm install @apollo/server graphql
+npm install --save-dev typescript @types/node
+
+GraphQL Schema:
+Games
+Reviews
+Authors
+
+Resolvers:
+type Person {
+	id: ID!
+	name: String!
+	age: Int!
+	posts: [Post!]!
+}
+
+Each type that is defined, maps to a "resolver" function.
+1. Define a type defintion (typeDefs).
+2. Define schemas of the entity types inside typeDefs.
+3. Define data (if hard-coded).
+4. Define resolver function that returns the data.
+5. Define the "Query" type in typeDefs for the resolver function and specify the return type of that resolver function.
+
+api/someapi
+
+id
+name
+street
+abcd
+poyr
+jaskdfh
+hasdfkjhasdf
+bsadfknabsdf
+
+Resolver function parameters (Query variables):
+game(parent, args, context)
+parent: refers to the parent resolver function in a resolver chain.
+	game(_,...)
+args: we do need this, where we can access the variables that are passed to the query.
+	game(_,args,...)
+context: any authenticaion information, or any additional data that is required for the query.
+	game(_, args)
+	
+For nested queries or data:
+1. For the type, define resolver functions for each nested type.
+2. This resolver function will receive the parent query as a parameter.
+3. It will return the filtered value for the nested data.
+4. Map the types (relationship) between the types.
+	Resolver function:
+	Game: {
+		reviews(parent) {
+			return reviews.filter(review => review.game_id === parent.id)
+		}
+	}
+
+	Type mapping:
+	type Game {
+		id: ID!,
+		name: String!,
+		platforms: [String!]!,
+		review: [Reviews!]
+	}
+	
+POST, PUT, DELETE.
+Mutations:
+===
+!==
+
+C# client to consume TypeScript-based GraphQL API:
+
+Install-package GraphQL.Client
+Install-package GraphQL.Client.Serializer.Newtonsoft
+
+// Program.cs:
+builder.Services.AddScoped<IGraphQLClient>(
+	s => new GraphQLHttpClient("http://localhost:4000", new NewtonsoftJsonSerializer))
+
+// Queries:
+public Queries
+{
+	private IGraphQLClient _client;
+	public Queries(IGraphQLClient client)
+	{
+		_client = client;
+	}
+	
+	public async Task<List<Game>> GetAllGames()
+	{
+		var query = new GraphQLRequest
+		{
+			Query = @"
+				query {
+					games {
+						id,
+						name,
+						platforms
+					}
+				}
+			"
+		};
+		
+		var res = await _client.SendQueryAsync<ResponseGameCollectionType>(query);
+		return res.Data.Games;
+		
+	}
+}
