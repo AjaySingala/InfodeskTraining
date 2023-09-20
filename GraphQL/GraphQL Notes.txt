@@ -311,3 +311,79 @@ public Queries
 		
 	}
 }
+
+Queries:
+query GamesQuery {
+  games {
+    id,
+    name,
+    platforms
+  }
+}
+
+query ReviewsQuery {
+  reviews {
+    id
+    content
+    rating
+  } 
+}
+query SingleGameQuery($gameId: ID!) {
+  game(id: $gameId) {
+    id
+    name
+    platforms,
+    reviews {
+      id,
+      rating
+    }
+  }
+}
+
+query GamesQuery {
+  games {
+    id,
+    name,
+    platforms,
+    reviews {
+      id,
+      rating,
+      content,
+      author {
+        id,
+        name
+      }
+    }
+  }
+}
+
+Mutations:
+mutation DeleteGame($gameId: ID!) {
+  deleteGame(id: $gameId) {
+    id,
+    name  
+  }
+}
+mutation AddGame($game: AddGameInput!) {
+  addGame(game: $game) {
+    id,
+    name,
+    platforms
+  }
+}
+mutation UpdateGame($updateGameId: ID!, $game: EditGameInput!) {
+  updateGame(id: $updateGameId, game: $game) {
+    id
+    name
+    platforms
+  }
+}
+query AuthorsQuery {
+  authors {
+    id
+    name
+    reviews {
+      id
+    }
+  }
+}
